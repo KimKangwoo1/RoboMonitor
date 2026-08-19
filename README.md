@@ -2,11 +2,10 @@
 
 > **WPF MVVM 기반 로봇 제어 및 실시간 모니터링 시스템**
 
-RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계하는 WPF 개인 프로젝트입니다.  
-실제 로봇 장비가 없는 환경에서도 동작을 확인할 수 있도록 **Robot Simulator**를 구성하고, 로봇 상태·제어·알람·로그를 하나의 데스크톱 애플리케이션에서 관리하는 것을 목표로 합니다.
+RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계한 WPF 개인 프로젝트입니다. 실제 로봇 장비가 없는 환경에서도 동작 흐름을 확인할 수 있도록 **Robot Simulator**를 구성하고, 로봇 상태·제어·알람·로그를 하나의 데스크톱 애플리케이션에서 관리하도록 구현했습니다.
 
-> 🚧 **현재 상태: 프로젝트 초기 구성 단계**  
-> 아래 기능과 기술은 v1에서 구현할 목표이며, 구현 완료 여부는 개발 진행에 따라 갱신합니다.
+> ✅ **현재 상태: v1 핵심 기능 구현 및 Windows Visual Studio 실행 검증 완료**  
+> Windows 환경에서 앱 실행, 로봇 연결, Servo, Start/Stop, Mode 전환, Emergency Stop, Alarm/Log 동작을 확인했습니다. `RESET E-STOP` 동작은 추가 확인 예정입니다.
 
 ---
 
@@ -22,25 +21,25 @@ RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계하는 WP
 
 ---
 
-## 🛠 예정 기술 스택
+## 🛠 기술 스택
 
 | Category | Technology |
 |---|---|
 | Language | C# |
 | UI Framework | WPF |
-| Platform | .NET |
+| Platform | .NET 8 (`net8.0-windows`) |
 | Architecture | MVVM |
 | UI | XAML, Data Binding |
 | State Update | INotifyPropertyChanged |
 | Collection | ObservableCollection |
-| Command | ICommand |
-| Async | async / await |
+| Command | ICommand / RelayCommand |
+| Timer | DispatcherTimer |
 | Development | Visual Studio |
 | Version Control | Git, GitHub |
 
 ---
 
-## 📌 v1 구현 예정 기능
+## 📌 v1 구현 기능
 
 ### Dashboard
 - 로봇 연결 상태 표시
@@ -51,94 +50,142 @@ RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계하는 WP
 - Joint 1~4 위치 표시
 
 ### Robot Control
+- Connect / Disconnect
 - Servo ON / OFF
 - Start / Stop
-- Emergency Stop
+- Emergency Stop / Reset
 - Manual / Auto 모드 전환
+- 상태에 따른 Command 활성화 조건 적용
 
 ### Robot Simulator
 - 실제 로봇 없이 테스트 가능한 상태 데이터 생성
-- Joint 위치, 속도, 온도 등 실시간 값 변경
-- 제어 명령에 따른 상태 변화 구현
+- Joint 위치, 속도, 온도 실시간 변경
+- RUN/STOP, Servo, Mode 상태를 시뮬레이션 데이터에 반영
 
 ### Alarm & Log
-- 경고 / 오류 / 정보 알람 표시
-- 실시간 로그 추가
-- 시간, Level, Message 관리
+- 고온 Warning 알람 생성
+- Emergency Stop Error 알람 생성
+- 동작 로그 실시간 기록
+- `ObservableCollection` 기반 UI 자동 갱신
 
 ---
 
-## 🧩 예정 프로젝트 구조
+## ✅ Windows 실행 검증
+
+Windows + Visual Studio 환경에서 실제 실행해 아래 동작을 확인했습니다.
+
+- 애플리케이션 정상 실행
+- Robot Connected 상태 표시
+- Servo ON 동작
+- Robot Start / Stop 동작
+- Manual / Auto 모드 전환
+- Speed / Temperature / Joint 1~4 값 UI 반영
+- Operation Time 갱신
+- Emergency Stop 동작
+- Emergency Stop 알람 생성
+- Operation Log 실시간 누적
+
+> `RESET E-STOP` 버튼의 복구 동작은 추가 검증 예정입니다.
+
+초기 실행 과정에서 `.NET 8 Desktop Runtime`이 설치되지 않은 환경에서는 실행 시 런타임 설치 안내가 표시되었습니다. `.NET 8 Desktop Runtime` 설치 후 정상 실행을 확인했습니다.
+
+---
+
+## 🧩 프로젝트 구조
 
 ```text
 RoboMonitor/
-├── Commands/       # ICommand 구현
-├── Models/         # Robot, Alarm 등 데이터 모델
-├── Services/       # Robot Simulator 및 서비스 로직
-├── ViewModels/     # 화면 상태와 명령 관리
-├── Views/          # WPF XAML 화면
-├── Resources/      # Style, ResourceDictionary
-├── docs/           # 아키텍처 및 실행 화면
-├── App.xaml
-└── RoboMonitor.csproj
+├── RoboMonitor.sln
+├── src/
+│   └── RoboMonitor/
+│       ├── Commands/
+│       │   └── RelayCommand.cs
+│       ├── Models/
+│       │   ├── AlarmEntry.cs
+│       │   ├── LogEntry.cs
+│       │   └── RobotTelemetry.cs
+│       ├── Services/
+│       │   └── RobotSimulationService.cs
+│       ├── ViewModels/
+│       │   ├── MainViewModel.cs
+│       │   └── ObservableObject.cs
+│       ├── App.xaml
+│       ├── MainWindow.xaml
+│       └── RoboMonitor.csproj
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## 🔄 설계 방향
+## 🔄 MVVM 구조
 
 ```text
-View (XAML)
-    │
-    │ Data Binding / Command
-    ▼
-ViewModel
-    │
-    │ Service 호출
-    ▼
-Robot Service / Simulator
-    │
-    ▼
-Model
+View (MainWindow.xaml)
+        │
+        │ Data Binding / ICommand
+        ▼
+MainViewModel
+        │
+        │ 상태 관리 / 제어 요청
+        ▼
+RobotSimulationService
+        │
+        ▼
+RobotTelemetry / AlarmEntry / LogEntry
 ```
 
-View는 화면 표현에 집중하고, ViewModel이 화면에 필요한 상태와 명령을 관리하도록 구성할 예정입니다.  
-Robot Simulator는 실제 장비 연결부와 분리해 이후 TCP/IP 등의 실제 통신 방식으로 확장할 수 있도록 설계합니다.
+`MainWindow.xaml.cs`에서는 화면 로직을 직접 처리하지 않고 `MainViewModel`을 `DataContext`로 지정하는 역할만 수행합니다. 화면에 표시되는 값은 Binding으로 연결하고, 버튼 동작은 `ICommand`를 통해 ViewModel의 명령으로 연결합니다.
 
 ---
 
 ## 📚 WPF 학습 포인트
 
-이 프로젝트에서는 기능 구현과 함께 아래 개념을 코드 기준으로 정리합니다.
+이 프로젝트의 실제 코드를 기준으로 아래 내용을 복습합니다.
 
 - XAML과 Code-behind의 역할
 - DataContext
 - Data Binding
-- Binding Mode
 - MVVM
 - INotifyPropertyChanged
 - ObservableCollection
 - ICommand / RelayCommand
-- async / await
-- UI Thread와 Dispatcher
-- ResourceDictionary와 Style
+- CanExecute
+- DispatcherTimer
+- UI 상태 갱신
+- Style / Resource
 
 ---
 
 ## 🗺 Development Roadmap
 
 - [x] GitHub 저장소 생성
-- [x] 프로젝트 README 초기 구성
 - [x] Visual Studio / WPF용 `.gitignore` 구성
-- [ ] WPF 프로젝트 생성
-- [ ] MVVM 기본 구조 구성
-- [ ] Dashboard 구현
-- [ ] Robot Simulator 구현
-- [ ] Robot Control 구현
-- [ ] Alarm / Log 구현
-- [ ] UI 개선
-- [ ] 실행 화면 및 아키텍처 문서 추가
-- [ ] README 최종 정리
+- [x] WPF 프로젝트 생성
+- [x] MVVM 기본 구조 구성
+- [x] Dashboard 코드 구현
+- [x] Robot Simulator 코드 구현
+- [x] Robot Control 코드 구현
+- [x] Alarm / Log 코드 구현
+- [x] 기본 산업용 다크 UI 구성
+- [x] Windows Visual Studio 실행 검증
+- [ ] RESET E-STOP 복구 동작 추가 검증
+- [ ] 실행 화면 캡처 GitHub 추가
+- [ ] 아키텍처 이미지 추가
+- [ ] WPF 핵심 코드 학습 및 Notion 정리
+
+---
+
+## ▶️ 실행 환경
+
+프로젝트는 **Windows + Visual Studio + .NET 8 WPF** 환경을 대상으로 합니다.
+
+1. Repository clone 또는 ZIP 다운로드
+2. `RoboMonitor.sln` 열기
+3. .NET 8 SDK 및 WPF 개발 워크로드 확인
+4. `.NET 8 Desktop Runtime` 설치 확인
+5. `RoboMonitor`를 시작 프로젝트로 선택
+6. 실행 후 Connect → Servo ON → Start 순서로 동작 확인
 
 ---
 
@@ -149,5 +196,6 @@ Robot Simulator는 실제 장비 연결부와 분리해 이후 TCP/IP 등의 실
 | Project | RoboMonitor |
 | Type | WPF Desktop Application |
 | Architecture | MVVM |
-| Status | In Development |
+| Target | .NET 8 / Windows |
+| Status | v1 Implemented / Windows Runtime Verified |
 | Repository | `KimKangwoo1/RoboMonitor` |
