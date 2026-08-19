@@ -2,10 +2,10 @@
 
 > **WPF MVVM 기반 로봇 제어 및 실시간 모니터링 시스템**
 
-RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계한 WPF 개인 프로젝트입니다. 실제 로봇 장비가 없는 환경에서도 동작 흐름을 확인할 수 있도록 **Robot Simulator**를 구성하고, 로봇 상태·제어·알람·로그를 하나의 데스크톱 애플리케이션에서 관리하도록 구현하고 있습니다.
+RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계한 WPF 개인 프로젝트입니다. 실제 로봇 장비가 없는 환경에서도 동작 흐름을 확인할 수 있도록 **Robot Simulator**를 구성하고, 로봇 상태·제어·알람·로그를 하나의 데스크톱 애플리케이션에서 관리하도록 구현했습니다.
 
-> 🚧 **현재 상태: v1 핵심 기능 코드 구현 완료 / Windows 실행 검증 대기**  
-> 현재 코드는 `develop` 브랜치에 구현되어 있으며, Visual Studio에서 실제 실행 확인 후 `main`에 병합할 예정입니다.
+> ✅ **현재 상태: v1 핵심 기능 구현 및 Windows Visual Studio 실행 검증 완료**  
+> Windows 환경에서 앱 실행, 로봇 연결, Servo, Start/Stop, Mode 전환, Emergency Stop, Alarm/Log 동작을 확인했습니다. `RESET E-STOP` 동작은 추가 확인 예정입니다.
 
 ---
 
@@ -70,6 +70,27 @@ RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계한 WPF �
 
 ---
 
+## ✅ Windows 실행 검증
+
+Windows + Visual Studio 환경에서 실제 실행해 아래 동작을 확인했습니다.
+
+- 애플리케이션 정상 실행
+- Robot Connected 상태 표시
+- Servo ON 동작
+- Robot Start / Stop 동작
+- Manual / Auto 모드 전환
+- Speed / Temperature / Joint 1~4 값 UI 반영
+- Operation Time 갱신
+- Emergency Stop 동작
+- Emergency Stop 알람 생성
+- Operation Log 실시간 누적
+
+> `RESET E-STOP` 버튼의 복구 동작은 추가 검증 예정입니다.
+
+초기 실행 과정에서 `.NET 8 Desktop Runtime`이 설치되지 않은 환경에서는 실행 시 런타임 설치 안내가 표시되었습니다. `.NET 8 Desktop Runtime` 설치 후 정상 실행을 확인했습니다.
+
+---
+
 ## 🧩 프로젝트 구조
 
 ```text
@@ -120,7 +141,7 @@ RobotTelemetry / AlarmEntry / LogEntry
 
 ## 📚 WPF 학습 포인트
 
-이 프로젝트의 코드를 기준으로 아래 내용을 복습할 예정입니다.
+이 프로젝트의 실제 코드를 기준으로 아래 내용을 복습합니다.
 
 - XAML과 Code-behind의 역할
 - DataContext
@@ -147,25 +168,24 @@ RobotTelemetry / AlarmEntry / LogEntry
 - [x] Robot Control 코드 구현
 - [x] Alarm / Log 코드 구현
 - [x] 기본 산업용 다크 UI 구성
-- [ ] Windows Visual Studio 실행 검증
-- [ ] 실행 화면 캡처 추가
+- [x] Windows Visual Studio 실행 검증
+- [ ] RESET E-STOP 복구 동작 추가 검증
+- [ ] 실행 화면 캡처 GitHub 추가
 - [ ] 아키텍처 이미지 추가
-- [ ] README 최종 정리
-- [ ] `develop` → `main` 병합
+- [ ] WPF 핵심 코드 학습 및 Notion 정리
 
 ---
 
 ## ▶️ 실행 환경
 
-현재 프로젝트는 **Windows + Visual Studio + .NET 8 WPF** 환경을 대상으로 합니다.
+프로젝트는 **Windows + Visual Studio + .NET 8 WPF** 환경을 대상으로 합니다.
 
-1. Repository clone
+1. Repository clone 또는 ZIP 다운로드
 2. `RoboMonitor.sln` 열기
 3. .NET 8 SDK 및 WPF 개발 워크로드 확인
-4. `RoboMonitor`를 시작 프로젝트로 선택
-5. 실행 후 Connect → Servo ON → Start 순서로 동작 확인
-
-> 현재 이 저장소의 v1 코드는 생성되었지만 실제 Windows GUI 실행 검증은 아직 완료되지 않았습니다.
+4. `.NET 8 Desktop Runtime` 설치 확인
+5. `RoboMonitor`를 시작 프로젝트로 선택
+6. 실행 후 Connect → Servo ON → Start 순서로 동작 확인
 
 ---
 
@@ -177,5 +197,5 @@ RobotTelemetry / AlarmEntry / LogEntry
 | Type | WPF Desktop Application |
 | Architecture | MVVM |
 | Target | .NET 8 / Windows |
-| Status | Code Implemented, Runtime Verification Pending |
+| Status | v1 Implemented / Windows Runtime Verified |
 | Repository | `KimKangwoo1/RoboMonitor` |
