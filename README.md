@@ -4,7 +4,7 @@
 
 RoboMonitor는 산업용 로봇 제어 프로그램을 가정해 설계한 WPF 개인 프로젝트입니다. 실제 로봇 장비가 없는 환경에서도 동작 흐름을 확인할 수 있도록 **Robot Simulator**를 구성하고, 로봇 상태·제어·알람·로그를 하나의 데스크톱 애플리케이션에서 관리하도록 구현했습니다.
 
-> ✅ **현재 상태: v1 핵심 기능 구현 및 Windows Visual Studio 실행 검증 완료**  
+> ✅ **현재 상태: v1 핵심 기능 구현 및 Windows Visual Studio 전체 동작 검증 완료**  
 > Windows 환경에서 앱 실행, 로봇 연결, Servo, Start/Stop, Mode 전환, Emergency Stop, **RESET E-STOP 복구**, Alarm/Log 동작까지 확인했습니다.
 
 ---
@@ -170,6 +170,7 @@ RobotTelemetry / AlarmEntry / LogEntry
 - [x] 기본 산업용 다크 UI 구성
 - [x] Windows Visual Studio 실행 검증
 - [x] RESET E-STOP 복구 동작 검증
+- [x] v1 핵심 제어 흐름 전체 검증
 - [ ] 실행 화면 캡처 GitHub 추가
 - [ ] 아키텍처 이미지 추가
 - [ ] WPF 핵심 코드 학습 및 Notion 정리
@@ -197,5 +198,5 @@ RobotTelemetry / AlarmEntry / LogEntry
 | Type | WPF Desktop Application |
 | Architecture | MVVM |
 | Target | .NET 8 / Windows |
-| Status | v1 Implemented / Windows Runtime Verified |
+| Status | v1 Implemented / Core Flow Verified |
 | Repository | `KimKangwoo1/RoboMonitor` |
