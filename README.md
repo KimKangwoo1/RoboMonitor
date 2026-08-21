@@ -7,6 +7,10 @@ RoboMonitor는 **WPF의 기본 구조와 데이터 바인딩을 이해하기 위
 
 이 프로젝트를 진행하면서 WPF에서 화면과 로직을 분리하는 **MVVM 구조**와, View와 ViewModel을 연결하는 **Data Binding**의 기본 개념을 이해하는 데 중점을 두었습니다.
 
+## 🎬 시연 영상
+
+[YouTube에서 시연 영상 보기](https://youtu.be/9xBM6WRsdQs)
+
 ---
 
 ## 🎯 프로젝트 목적
